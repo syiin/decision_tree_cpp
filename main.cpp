@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <array>
+#include <functional>
 
 enum terrain { HILLY, FLAT };
 typedef std::array <float, 9> datarow;
