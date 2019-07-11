@@ -17,7 +17,9 @@ int calcEntropy(std::map <terrain, int> classCounts, int totalCount){
   return idxScore;
 } 
 
-int calcGini(std::map<terrain, int> classCounts, int totalCount){
+int 
+calcGini(std::map<terrain, int> classCounts, int totalCount)
+{
   int idxScore = 0;
   for (auto const& numOfClass: classCounts){
     idxScore += (numOfClass.second / totalCount);
@@ -25,8 +27,11 @@ int calcGini(std::map<terrain, int> classCounts, int totalCount){
   return idxScore;
 }
 
-datavec splitVec(datavec dataVector, unsigned int paramIdx, 
-  bool (*testFunc)(float paramVal)){
+datavec
+splitVec(datavec dataVector, 
+    unsigned int paramIdx,
+    std::function<bool (float)> testFunc)
+{  
   datavec outputVec;
   for (auto const& dataRow: dataVector){
     if (testFunc(dataRow[paramIdx])){
@@ -36,11 +41,15 @@ datavec splitVec(datavec dataVector, unsigned int paramIdx,
   return outputVec;
 }
 
-bool gt3(float x){
-  return x > 0;
+std::function<bool (float)>
+gtThanY(float y)
+{
+ return [y](float x){ return x > y; };
 }
 
-int main(){
+int
+main()
+{
   datavec testVec;
   datarow testRow1 = {1,1,1,1,1,1,1,1,9};
   datarow testRow2 = {-1,1,1,1,1,1,1,1,8};
@@ -51,12 +60,6 @@ int main(){
   testVec.push_back(testRow3);
   
   datavec testoVec;
-  testoVec = splitVec(testVec, 0, gt3);
+  testoVec = splitVec(testVec, 0, gtThanY(0));
 //  splitVec(testVec, 0, [](float x)->bool{ return x > 3 });
 }
-
-
-
-
-
-
