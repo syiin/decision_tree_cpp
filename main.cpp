@@ -9,23 +9,19 @@ enum terrain { HILLY, FLAT };
 typedef std::array <float, 9> datarow;
 typedef std::vector <datarow> datavec;
 
-int calcEntropy(std::map <terrain, int> classCounts, int totalCount){
-  int idxScore = 0;
-  for (auto const& numOfClass: classCounts){
-    int p = (numOfClass.second / totalCount);
-    idxScore += log2(p) * -(p);
-  }
-  return idxScore;
-} 
-
-int 
-calcGini(std::map<terrain, int> classCounts, int totalCount)
+float 
+calcSingleEntropy(datavec dataVec,
+    float klassIdx,
+    float klass)
 {
-  int idxScore = 0;
-  for (auto const& numOfClass: classCounts){
-    idxScore += (numOfClass.second / totalCount);
+  int n = 0;
+  for (auto const& dataRow: dataVec){
+    if (dataRow[klassIdx] == klass){
+      n++;
+    }
   }
-  return idxScore;
+  float p = (float) n / (float) dataVec.size();
+  return -(p) * log2(p); 
 }
 
 datavec
@@ -42,8 +38,15 @@ splitVec(datavec dataVector,
   return outputVec;
 }
 
+
 std::function<bool (float)>
-gtThanY(float y)
+eqtY(float y)
+{
+ return [y](float x){ return x == y; };
+}
+
+std::function<bool (float)>
+gtY(float y)
 {
  return [y](float x){ return x > y; };
 }
@@ -61,6 +64,7 @@ main()
   testVec.push_back(testRow3);
   
   datavec testoVec;
-  testoVec = splitVec(testVec, 0, gtThanY(0));
-//  splitVec(testVec, 0, [](float x)->bool{ return x > 3 });
+  testoVec = splitVec(testVec, 0, gtY(0));
+  float S = calcSingleEntropy(testVec, 1, 1);
+  S = calcSingleEntropy(testVec, 0, 1);
 }
