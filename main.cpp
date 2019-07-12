@@ -56,6 +56,16 @@ gtY(float y)
  return [y](float x){ return x > y; };
 }
 
+std::vector<float>
+getMidPoints(std::vector<float> inpVec)
+{
+  std::vector<float> outpVec
+  for (int i = 0; i < (inpVec.size() - 1); i++){
+    float midPoint = ((inpVec[i] - inpVec[i+1]) / 2) + inpVec[i];
+    outpVec.push_back(midPoint);
+  }
+}
+
 int
 main()
 {
