@@ -27,6 +27,32 @@ calcClassEntropy(datavec dataVec,
   return -(p) * log2(p); 
 }
 
+float 
+calcClassProp(datavec dataVec,
+    float klassIdx,
+    float klass)
+{
+  int n = 0;
+  for (auto const& dataRow: dataVec){
+    if (dataRow[klassIdx] == klass){
+      n++;
+    }
+  }
+  float p = (float) n / (float) dataVec.size();
+  return p; 
+}
+
+float calcGini(datavec dataVec,
+    float klassIdx)
+{
+  float giniSum = 0;
+  for (int i = 1; i < 10; i++){
+    giniSum =  giniSum + pow(calcClassProp(dataVec, klassIdx, i), 2);
+  }
+
+  return 1 - giniSum;
+}
+
 std::tuple<datavec, datavec> 
 splitVec(datavec dataVector, 
     unsigned int paramIdx,
@@ -72,9 +98,15 @@ int
 main()
 {
   datavec testVec;
-  datarow testRow1 = {1,1,1,1,1,1,1,1,9};
-  datarow testRow2 = {-1,1,1,1,1,1,1,1,8};
-  datarow testRow3 = {1,1,1,1,1,1,1,1,8};
+  datarow testRow1 = {1,1,1,1,1,1,1,1,1};
+  datarow testRow2 = {-1,1,1,1,1,1,1,1,2};
+  datarow testRow3 = {1,1,1,1,1,1,1,1,3};
+  datarow testRow4 = {1,1,1,1,1,1,1,1,4};
+  datarow testRow5 = {1,1,1,1,1,1,1,1,5};
+  datarow testRow6 = {1,1,1,1,1,1,1,1,6};
+  datarow testRow7 = {1,1,1,1,1,1,1,1,7};
+  datarow testRow8 = {1,1,1,1,1,1,1,1,8};
+  datarow testRow9 = {1,1,1,1,1,1,1,1,9};
 
   testVec.push_back(testRow1);
   testVec.push_back(testRow2);
@@ -93,7 +125,7 @@ main()
   //calculate cross entropy test
   float S = calcClassEntropy(testVec, 1, 1);
   S = calcClassEntropy(testVec, 0, 1);
-  if ((int) ( std::to_string(S) == "0.389975")){
+  if (std::to_string(S) == "0.389975"){
     std::cout << "calcClassEntropy(): PASS" << std::endl;
   } else {
     std::cout << "calcClassEntropy(): FAIL" << std::endl;
@@ -105,9 +137,30 @@ main()
   std::vector <float> outmPVec = getMidPoints(mPVec);
   std::vector <float> corrMidPoints = {2, 4, 6, 8};
 
-  if ((int) (outmPVec == corrMidPoints)){
+  if (outmPVec == corrMidPoints){
     std::cout <<  "getMidPoints(): PASS" << std::endl;
   } else {
     std::cout << "getMidPoints():  FAIL" << std::endl;
+  }
+
+  //calculate gini index test
+  datavec giniVec;
+  giniVec.push_back(testRow1);
+  giniVec.push_back(testRow2);
+  giniVec.push_back(testRow3);
+  giniVec.push_back(testRow4);
+  giniVec.push_back(testRow5);
+  giniVec.push_back(testRow6);
+  giniVec.push_back(testRow7);
+  giniVec.push_back(testRow8);
+  giniVec.push_back(testRow9);
+
+  float giniIdx = calcGini(giniVec, 8);
+
+  if (std::to_string(giniIdx) == "0.888889"){
+    std::cout << "calcGini(): PASS" << std::endl;
+  } else {
+    std::cout << "calcGini(): FAIL" << std::endl;
+    std::cout << "Got: " << std::to_string(giniIdx) << std::endl;
   }
 }
